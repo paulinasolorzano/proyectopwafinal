@@ -1,0 +1,116 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda Online</title>
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#007bff">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 50px;
+        }
+        .btn {
+            padding: 15px 30px;
+            font-size: 18px;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .cliente {
+            background: #007bff;
+            color: white;
+        }
+        .admin {
+            background: #28a745;
+            color: white;
+        }
+        .status {
+            margin-top: 30px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🏪 Tienda Online</h1>
+    <p>Selecciona tu modo de acceso:</p>
+    
+    <div class="menu">
+        <a href="tienda.html" class="btn cliente">🛒 Modo Cliente</a>
+        <a href="admin.html" class="btn admin">⚙️ Modo Administrador</a>
+    </div>
+
+    <div id="status" class="status" style="display: none;">
+        <span id="statusText"></span>
+    </div>
+
+    <script>
+        // Registrar Service Worker para PWA
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js')
+                .then(() => {
+                    console.log('Service Worker registrado');
+                    showStatus('✅ App lista para instalar', 'green');
+                })
+                .catch(error => {
+                    console.log('Error SW:', error);
+                    showStatus('⚠️ Sin funcionalidad offline', 'orange');
+                });
+        } else {
+            showStatus('❌ Service Worker no soportado', 'red');
+        }
+
+        // Mostrar botón de instalación PWA
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            showStatus('📱 Haz clic aquí para instalar la app', 'blue');
+            
+            const statusDiv = document.getElementById('status');
+            statusDiv.style.cursor = 'pointer';
+            statusDiv.onclick = installPWA;
+        });
+
+        function installPWA() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        showStatus('✅ App instalada', 'green');
+                    }
+                    deferredPrompt = null;
+                });
+            }
+        }
+
+        function showStatus(message, color) {
+            const statusDiv = document.getElementById('status');
+            const statusText = document.getElementById('statusText');
+            statusText.textContent = message;
+            statusDiv.style.display = 'block';
+            statusDiv.style.background = color === 'green' ? '#d4edda' : 
+                                       color === 'red' ? '#f8d7da' : 
+                                       color === 'orange' ? '#fff3cd' : '#cce7ff';
+            statusDiv.style.color = color === 'green' ? '#155724' : 
+                                  color === 'red' ? '#721c24' : 
+                                  color === 'orange' ? '#856404' : '#004085';
+        }
+    </script>
+</body>
+</html>
