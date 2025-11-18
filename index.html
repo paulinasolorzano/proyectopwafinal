@@ -47,12 +47,12 @@
     </style>
 </head>
 <body>
-    <h1>🏪 Tienda Online</h1>
+    <h1>Tienda Online</h1>
     <p>Selecciona tu modo de acceso:</p>
     
     <div class="menu">
-        <a href="tienda.html" class="btn cliente">🛒 Modo Cliente</a>
-        <a href="admin.html" class="btn admin">⚙️ Modo Administrador</a>
+        <a href="tienda.html" class="btn cliente">Modo Cliente</a>
+        <a href="admin.html" class="btn admin">Modo Administrador</a>
     </div>
 
     <div id="status" class="status" style="display: none;">
@@ -65,14 +65,14 @@
             navigator.serviceWorker.register('./sw.js')
                 .then(() => {
                     console.log('Service Worker registrado');
-                    showStatus('✅ App lista para instalar', 'green');
+                    showStatus('App lista para instalar', 'green');
                 })
                 .catch(error => {
                     console.log('Error SW:', error);
-                    showStatus('⚠️ Sin funcionalidad offline', 'orange');
+                    showStatus('Sin funcionalidad offline', 'orange');
                 });
         } else {
-            showStatus('❌ Service Worker no soportado', 'red');
+            showStatus('Service Worker no soportado', 'red');
         }
 
         // Mostrar botón de instalación PWA
@@ -80,7 +80,7 @@
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            showStatus('📱 Haz clic aquí para instalar la app', 'blue');
+            showStatus('Haz clic aquí para instalar la app', 'blue');
             
             const statusDiv = document.getElementById('status');
             statusDiv.style.cursor = 'pointer';
@@ -92,7 +92,7 @@
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then((choiceResult) => {
                     if (choiceResult.outcome === 'accepted') {
-                        showStatus('✅ App instalada', 'green');
+                        showStatus('App instalada', 'green');
                     }
                     deferredPrompt = null;
                 });
