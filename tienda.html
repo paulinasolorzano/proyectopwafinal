@@ -110,6 +110,29 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+// HABILITAR PERSISTENCIA OFFLINE DE FIRESTORE
+import { enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+enableIndexedDbPersistence(db)
+  .then(() => {
+    console.log("✅ Persistencia offline habilitada - Tienda");
+  })
+  .catch((err) => {
+    console.log("ℹ️ Persistencia no disponible en este contexto");
+  });
+
+// DETECCIÓN DE CONEXIÓN
+function updateOnlineStatus() {
+  if (!navigator.onLine) {
+    showAlert("🔌 Modo offline - Productos desde caché local", "warning");
+  }
+}
+
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+
         const productosDiv = document.getElementById("productos");
         const carritoUl = document.getElementById("lista-carrito");
         const totalSpan = document.getElementById("total");
