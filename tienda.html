@@ -90,14 +90,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <script type="module">
-        
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { 
-            getFirestore, collection, onSnapshot, query, orderBy
-        } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
 
         // Configuración Firebase //muy importante cambies estos datos con tus propias claves
         const firebaseConfig = {
@@ -111,15 +103,24 @@
             measurementId: "G-8QS2ZB4BM4"
         };
 
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { 
+            getFirestore, collection, onSnapshot, query, orderBy
+        } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        
         // HABILITAR PERSISTENCIA OFFLINE DE FIRESTORE
         import { enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
         enableIndexedDbPersistence(db)
           .then(() => {
-            console.log("✅ Persistencia offline habilitada - Tienda");
+            console.log("Persistencia offline habilitada - Tienda");
           })
           .catch((err) => {
-            console.log("ℹ️ Persistencia no disponible en este contexto");
+            console.log("Persistencia no disponible en este contexto");
           });
 
         const productosDiv = document.getElementById("productos");
@@ -128,7 +129,6 @@
         const pagarBtn = document.getElementById("pagar");
         const cartBadge = document.getElementById("cart-badge");
         const limpiarBtn = document.getElementById("limpiar-carrito");
-
         let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
         let productosData = [];
 
@@ -151,14 +151,14 @@
         // DETECCIÓN DE CONEXIÓN MEJORADA
         function updateOnlineStatus() {
             if (!navigator.onLine) {
-                showAlert("🔌 Modo offline activado", "warning");
+                showAlert("Modo offline activado", "warning");
                 // Verificar si tenemos datos cacheados
                 const cache = localStorage.getItem('productosCache');
                 if (!cache) {
-                    showAlert("⚠️ Conéctate primero a internet para cargar productos", "danger");
+                    showAlert("Conéctate primero a internet para cargar productos", "danger");
                 }
             } else {
-                showAlert("🌐 Conectado - Sincronizando", "success");
+                showAlert("Conectado - Sincronizando", "success");
             }
         }
 
@@ -173,7 +173,7 @@
             if (cache && !navigator.onLine) {
                 productosData = JSON.parse(cache);
                 renderProductos(productosData);
-                showAlert("📱 Modo offline - Datos cacheados", "info");
+                showAlert("Modo offline - Datos cacheados", "info");
                 return;
             }
 
@@ -208,7 +208,7 @@
                     if (cache) {
                         productosData = JSON.parse(cache);
                         renderProductos(productosData);
-                        showAlert("📱 Modo offline - Mostrando datos cacheados", "warning");
+                        showAlert("Modo offline - Mostrando datos cacheados", "warning");
                     } else {
                         mostrarSinConexion();
                     }
@@ -239,7 +239,6 @@
 
         function renderProductos(productos) {
             productosDiv.innerHTML = '';
-            
             if (productos.length === 0) {
                 productosDiv.innerHTML = `
                     <div class="col-12 text-center py-5">
@@ -325,7 +324,7 @@
             const cantidad = parseInt(cantidadInput?.value) || 1;
 
             if (cantidad > producto.stock) {
-                alert(`❌ Solo hay ${producto.stock} unidades disponibles`);
+                alert(`Solo hay ${producto.stock} unidades disponibles`);
                 return;
             }
 
@@ -347,7 +346,7 @@
             mostrarCarrito();
             updateCartBadge();
             
-            showAlert(`✅ ${cantidad} x ${producto.nombre} agregado al carrito`, 'success');
+            showAlert(`${cantidad} x ${producto.nombre} agregado al carrito`, 'success');
             if (cantidadInput) cantidadInput.value = 1;
         }
 
@@ -434,7 +433,7 @@
 
         pagarBtn.addEventListener("click", () => {
             if (carrito.length === 0) {
-                alert("🛒 Tu carrito está vacío");
+                alert("Tu carrito está vacío");
                 return;
             }
             
@@ -443,8 +442,8 @@
                 `• ${item.cantidad}x ${item.nombre} - $${(item.precio * item.cantidad).toFixed(2)}`
             ).join('\n');
             
-            if (confirm(`💳 **Resumen de Compra**\n\n${resumen}\n\n💰 **Total: $${total}**\n\n¿Confirmar compra?`)) {
-                alert('✅ ¡Compra realizada con éxito! Gracias por tu compra.');
+            if (confirm(`**Resumen de Compra**\n\n${resumen}\n\n💰 **Total: $${total}**\n\n¿Confirmar compra?`)) {
+                alert('¡Compra realizada con éxito! Gracias por tu compra.');
                 
                 carrito = [];
                 localStorage.removeItem("carrito");
