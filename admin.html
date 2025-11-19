@@ -125,6 +125,38 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
+  // HABILITAR PERSISTENCIA OFFLINE DE FIRESTORE
+import { enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+enableIndexedDbPersistence(db)
+  .then(() => {
+    console.log("✅ Persistencia offline habilitada");
+    showAlert("Modo offline disponible", "success");
+  })
+  .catch((err) => {
+    if (err.code == 'failed-precondition') {
+      console.log("⚠️ Múltiples pestañas abiertas");
+    } else if (err.code == 'unimplemented') {
+      console.log("❌ Navegador no soporta persistencia");
+    }
+  });
+
+// DETECCIÓN DE CONEXIÓN
+function updateOnlineStatus() {
+  const status = navigator.onLine ? 'online' : 'offline';
+  
+  if (!navigator.onLine) {
+    showAlert("🔌 Modo offline activado - Trabajando localmente", "warning");
+  } else {
+    showAlert("🌐 Conectado - Sincronizando con servidor", "success");
+  }
+}
+
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+  
   // Cloudinary
   const cloudName = "dghzl1j6g";      
   const uploadPreset = "pwa_unsigned";
